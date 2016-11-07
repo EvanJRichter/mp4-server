@@ -25,6 +25,11 @@ app.use(bodyParser.urlencoded({
 // Use routes as a module (see index.js)
 require('./routes')(app, router);
 
+// // connect to MongoDB
+// mongoose.connect('mongodb://localhost/todo-api')
+//   .then(() =>  console.log('connection succesful'))
+//   .catch((err) => console.error(err));
+
 // Start the server
 app.listen(port);
 console.log('Server running on port ' + port);
