@@ -13,6 +13,14 @@ module.exports = function(router) {
  			PUT	Replace entire task with supplied task or 404 error
  			DELETE	Delete specified user or 404 error
 
+	where	filter results based on JSON query
+	sort	specify the order in which to sort each specified field (1- ascending; -1 - descending)
+	select	specify the set of fields to include or exclude in each document (1 - include; 0 - exclude)
+	skip	specify the number of results to skip in the result set; useful for pagination
+	limit	specify the number of results to return (default should be 100 for tasks and unlimited for users)
+	count	if set to true, return the count of documents that match the query (instead of the documents themselves)
+
+
 	*/
 
   var taskRoute = router.route('/tasks');
