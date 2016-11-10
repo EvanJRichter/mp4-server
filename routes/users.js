@@ -58,7 +58,6 @@ module.exports = function(router) {
 		}
 		if(req.query["skip"]){
 			skip = parseInt(req.query["skip"]);
-			console.log(skip);
 		}
 		if(req.query["sort"]){
 			sort = JSON.parse(req.query["sort"]);
@@ -126,7 +125,6 @@ module.exports = function(router) {
 		if (req.query["pendingTasks"]){
 			newUserVals.pendingTasks = (req.query["pendingTasks"]);
 		}
-		console.log(newUserVals);
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
 		    res.json(handleMongoResponse(err, user));
 	  	});
