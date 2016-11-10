@@ -79,13 +79,25 @@ module.exports = function(router) {
 
 	});
 
-	userRoute.post(function(req, res) {
-		//TODO: check if there is name and email first
-	  	var user = new User({name: req.query["name"], email: req.query["email"], pendingTasks: req.query["pendingTasks"]});
-		// Save it to database
-		user.save(function(err, user){
-		    res.json(handleMongoResponse(err, user));
-		});
+	userRoute.post(function(req, res) {	  	
+	  	if (!req.query["name"] && !req.query["email"]){
+			res.json({"data": "User POST Request Error", "message": "Must provide both email and name to create user."});
+	  	}
+	  	User.count({"email":req.query["email"]}).exec(function (err, users) { //check if there is a user with existing email
+	  		response = handleMongoResponse(err, users);
+		    if (response.message === "OK" && parseInt(response.data) == 0){
+		    	var user = new User({name: req.query["name"], email: req.query["email"], pendingTasks: req.query["pendingTasks"]});
+				// Save it to database
+				user.save(function(err, user){
+				    res.json(handleMongoResponse(err, user));
+				});
+		    }
+		    else {
+		    	res.json({"data": "User POST Request Error", "message": "Email must be valid and unique"});
+		    }
+	  	});	
+
+
 	});
 
 	userRoute.options(function(req, res){

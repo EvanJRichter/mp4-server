@@ -20,6 +20,7 @@ module.exports = function(router) {
 	limit	specify the number of results to return (default should be 100 for tasks and unlimited for users)
 	count	if set to true, return the count of documents that match the query (instead of the documents themselves)
 
+	Tasks cannot be created (or updated) without a name or a deadline. All other fields that the user did not specify should be set to reasonable values.
 
 	*/
 
