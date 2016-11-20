@@ -8,7 +8,7 @@ var TaskSchema   = new mongoose.Schema({
   deadline: Date,
   completed: { type: Boolean, default: false },
   assignedUser: { type: String, default: "" },
-  assignedUserName: { type: String, default: undefined },
+  assignedUserName: { type: String, default: "unassigned" },
   dateCreated: { type: Date, default: Date.now }
 });
 

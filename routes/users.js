@@ -67,32 +67,43 @@ module.exports = function(router) {
 		}
 		if(req.query["count"] && req.query["count"] === "true"){
 			User.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
+			   	res.status(200);
 			    res.json(handleMongoResponse(err, users));
+    			res.end();
 		  	});		
 		}
 		else {
 			User.find(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
+		  		res.status(200);
 			    res.json(handleMongoResponse(err, users));
-		  	});
+    			res.end();
+    		});
 		}
 
 	});
 
 	userRoute.post(function(req, res) {	  	
-	  	if (!req.query["name"] && !req.query["email"]){
+	  	if (!req.body.name || !req.body.email){
+			res.status(200);
 			res.json({"data": "User POST Request Error", "message": "Must provide both email and name to create user."});
+			res.end();
+			return;
 	  	}
-	  	User.count({"email":req.query["email"]}).exec(function (err, users) { //check if there is a user with existing email
+	  	User.count({"email":req.body.email}).exec(function (err, users) { //check if there is a user with existing email
 	  		response = handleMongoResponse(err, users);
 		    if (response.message === "OK" && parseInt(response.data) == 0){
-		    	var user = new User({name: req.query["name"], email: req.query["email"], pendingTasks: req.query["pendingTasks"]});
+		    	var user = new User({name: req.body.name, email: req.body.email, pendingTasks: req.body.pendingTasks});
 				// Save it to database
 				user.save(function(err, user){
+				   	res.status(200);
 				    res.json(handleMongoResponse(err, user));
+    				res.end();
 				});
 		    }
 		    else {
+		    	res.status(200);
 		    	res.json({"data": "User POST Request Error", "message": "Email must be valid and unique"});
+    			res.end();
 		    }
 	  	});	
 
@@ -110,29 +121,50 @@ module.exports = function(router) {
 	
 	userIdRoute.get(function(req, res) {
 		User.findById(req.params.id, function (err, user) {
-			res.json(handleMongoResponse(err, user));
+			mongoResponse = handleMongoResponse(err, user)
+			if (mongoResponse.message === "OK" && user != null){
+				res.status(200);
+				res.json(mongoResponse); 
+			}
+			else {
+				res.status(404);
+				res.json({"data":[], "message":"User Not Found"}); 
+			}
+			res.end();	
 	  	});
 	});
 
-	userIdRoute.put(function(req, res) {
+	userIdRoute.put(function(req, res) { 
 		var newUserVals = {};
-		if (req.query["name"]){
-			newUserVals.name = (req.query["name"]);
-		}
-		if (req.query["email"]){
-			newUserVals.email = (req.query["email"]);
-		}
-		if (req.query["pendingTasks"]){
-			newUserVals.pendingTasks = (req.query["pendingTasks"]);
-		}
+		newUserVals.name = req.body.name;
+		newUserVals.email = req.body.email;
+		newUserVals.pendingTasks = req.body.pendingTasks;
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
-		    res.json(handleMongoResponse(err, user));
+		    mongoResponse = handleMongoResponse(err, user)
+			if (mongoResponse.message === "OK"){
+				res.status(200);
+				res.json(mongoResponse); 
+			}
+			else {
+				res.status(404);
+				res.json({"data":[], "message":"User Not Found"}); 
+			}
+			res.end();	
 	  	});
 	});
 
-	userIdRoute.delete(function(req, res) {
+	userIdRoute.delete(function(req, res) { 
 		User.findByIdAndRemove(req.params.id, function (err, user) {
-		    res.json(handleMongoResponse(err, user));
+		    mongoResponse = handleMongoResponse(err, user)
+			if (mongoResponse.message === "OK"){
+				res.status(200);
+				res.json(mongoResponse); 
+			}
+			else {
+				res.status(404);
+				res.json({"data":[], "message":"User Not Found"}); 
+			}
+			res.end();	
 	  	});
 	});
 	
