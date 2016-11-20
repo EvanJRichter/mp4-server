@@ -143,7 +143,7 @@ module.exports = function(router) {
 	var userIdRoute = router.route('/users/:id');
 	
 	userIdRoute.get(function(req, res) {
-		User.findById(req.query.id, function (err, user) {
+		User.findById(req.params.id, function (err, user) {
 			if (err){
 				res.status(404).send({
 					message: "User not found",

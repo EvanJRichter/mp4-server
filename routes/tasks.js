@@ -159,7 +159,7 @@ module.exports = function(router) {
 		newTaskVals.assignedUser = req.body.assignedUser;
 		newTaskVals.assignedUserName = req.body.assignedUserName;
 
-		Task.findByIdAndUpdate(req.query.id, newTaskVals, function (err, task) {
+		Task.findByIdAndUpdate(req.params.id, newTaskVals, function (err, task) {
 		    res.status(200);
 			mongoResponse = handleMongoResponse(err, task)
 			if (mongoResponse.message === "OK" && task != null){
