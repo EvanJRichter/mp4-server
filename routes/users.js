@@ -58,16 +58,34 @@ module.exports = function(router) {
 
 		if(req.query.count && req.query.count === "true"){
 			User.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
-			   	res.status(200);
-			    res.json(handleMongoResponse(err, users));
-    			res.end();
+				if (err){
+					res.status(200).send({
+						message: err,
+						data: users
+					});
+				}
+				else {
+					res.status(200).send({
+						message: "OK",
+						data: users
+					});
+				}
 		  	});		
 		}
 		else {
 			User.find(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
-		  		res.status(200);
-			    res.json(handleMongoResponse(err, users));
-    			res.end();
+				if (err){
+					res.status(200).send({
+						message: err,
+						data: users
+					});
+				}
+				else {
+					res.status(200).send({
+						message: "OK",
+						data: users
+					});
+				}
     		});
 		}
 
@@ -151,7 +169,13 @@ module.exports = function(router) {
 
 	userIdRoute.delete(function(req, res) { 
 		User.findByIdAndRemove(req.params.id, function (err, user) {
-			if (err || user === null){
+			if (err){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
+			}
+			else if (user === null){
 				res.status(404).send({
 					message: "User not found",
 					data: []

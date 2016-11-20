@@ -62,16 +62,34 @@ module.exports = function(router) {
 
 		if(req.query.count && req.query.count === "true"){
 			Task.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, tasks) {
-			   	res.status(200);
-			    res.json(handleMongoResponse(err, users));
-    			res.end();
+				if (err){
+					res.status(200).send({
+						message: err,
+						data: tasks
+					});
+				}
+				else {
+					res.status(200).send({
+						message: "OK",
+						data: tasks
+					});
+				}
 		  	});		
 		}
 		else {
 			Task.find(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, tasks) {
-			   	res.status(200);
-			    res.json(handleMongoResponse(err, users));
-    			res.end();
+				if (err){
+					res.status(200).send({
+						message: err,
+						data: tasks
+					});
+				}
+				else {
+					res.status(200).send({
+						message: "OK",
+						data: tasks
+					});
+				}
 		  	});
 		}
 
@@ -92,9 +110,18 @@ module.exports = function(router) {
 
 		// Save it to database
 		task.save(function(err, task){
-	    	res.status(200);
-		    res.json(handleMongoResponse(err, task));
-    		res.end();
+			if (err){
+				res.status(200).send({
+					message: err,
+					data: task
+				});
+			}
+			else {
+				res.status(201).send({
+					message: "OK",
+					data: task
+				});
+			}
 		});
 	});
 
