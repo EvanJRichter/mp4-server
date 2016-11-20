@@ -135,16 +135,24 @@ module.exports = function(router) {
 	
 	userIdRoute.get(function(req, res) {
 		User.findById(req.query.id, function (err, user) {
-			mongoResponse = handleMongoResponse(err, user)
-			if (mongoResponse.message === "OK" && user != null){
-				res.status(200);
-				res.json(mongoResponse); 
+			if (err){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
+			}
+			else if (user === null){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"User Not Found"}); 
-			}
-			res.end();	
+				res.status(200).send({
+					message: "OK",
+					data: user
+				});
+			}		
 	  	});
 	});
 
@@ -154,16 +162,24 @@ module.exports = function(router) {
 		newUserVals.email = req.body.email;
 		newUserVals.pendingTasks = req.body.pendingTasks;
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
-		    mongoResponse = handleMongoResponse(err, user)
-			if (mongoResponse.message === "OK"){
-				res.status(200);
-				res.json(mongoResponse); 
+			if (err){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
+			}
+			else if (user === null){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"User Not Found"}); 
-			}
-			res.end();	
+				res.status(200).send({
+					message: "User updated",
+					data: user
+				});
+			}	
 	  	});
 	});
 
