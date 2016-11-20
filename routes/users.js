@@ -151,16 +151,18 @@ module.exports = function(router) {
 
 	userIdRoute.delete(function(req, res) { 
 		User.findByIdAndRemove(req.params.id, function (err, user) {
-		    mongoResponse = handleMongoResponse(err, user)
-			if (mongoResponse.message === "OK"){
-				res.status(200);
-				res.json(mongoResponse); 
+			if (err || user === null){
+				res.status(404).send({
+					message: "User not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"User Not Found"}); 
+				res.status(200).send({
+					message: "User deleted",
+					data: []
+				});
 			}
-			res.end();	
 	  	});
 	});
 	
