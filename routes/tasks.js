@@ -87,12 +87,12 @@ module.exports = function(router) {
 			res.json({"data": "Task POST Request Error", "message": "Must provide both deadline and name to create task."});
 	  	}
     	var task = new Task({
-    		name: JSON.parse(req.query["name"]), 
-    		deadline:  JSON.parse(req.query["deadline"]), 
-    		description:  JSON.parse(req.query["description"]),
-    		completed:  JSON.parse(req.query["completed"]),
-    		assignedUser:  JSON.parse(req.query["assignedUser"]),
-    		assignedUserName:  JSON.parse(req.query["assignedUserName"])
+    		name: req.query["name"], 
+    		deadline:  req.query["deadline"], 
+    		description:  req.query["description"],
+    		completed:  req.query["completed"],
+    		assignedUser:  req.query["assignedUser"],
+    		assignedUserName:  req.query["assignedUserName"]
     	});
 
 		// Save it to database
