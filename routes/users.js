@@ -50,22 +50,13 @@ module.exports = function(router) {
 		var skip = 0; 
 		var sort = {};
 		var select = {};
-		if(req.query["where"]){
-			where = JSON.parse(req.query["where"]);
-		}
-		if(req.query["limit"]){
-			limit = parseInt(req.query["limit"]);
-		}
-		if(req.query["skip"]){
-			skip = parseInt(req.query["skip"]);
-		}
-		if(req.query["sort"]){
-			sort = JSON.parse(req.query["sort"]);
-		}
-		if(req.query["select"]){
-			select = JSON.parse(req.query["select"]);
-		}
-		if(req.query["count"] && req.query["count"] === "true"){
+		where = req.query.where;
+		limit = req.query.limit;
+		skip =  req.query.skip;
+		sort = req.query.sort;
+		select = req.query.select;
+
+		if(req.query.count && req.query.count === "true"){
 			User.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
 			   	res.status(200);
 			    res.json(handleMongoResponse(err, users));
@@ -91,8 +82,13 @@ module.exports = function(router) {
 	  	}
 	  	User.count({"email":req.body.email}).exec(function (err, users) { //check if there is a user with existing email
 	  		response = handleMongoResponse(err, users);
+
 		    if (response.message === "OK" && parseInt(response.data) == 0){
-		    	var user = new User({name: req.body.name, email: req.body.email, pendingTasks: req.body.pendingTasks});
+		    	var user = new User({
+		    		name: req.body.name, 
+		    		email: req.body.email, 
+		    		pendingTasks: req.body.pendingTasks
+		    	});
 				// Save it to database
 				user.save(function(err, user){
 				   	res.status(201);
@@ -120,7 +116,7 @@ module.exports = function(router) {
 	var userIdRoute = router.route('/users/:id');
 	
 	userIdRoute.get(function(req, res) {
-		User.findById(req.params.id, function (err, user) {
+		User.findById(req.query.id, function (err, user) {
 			mongoResponse = handleMongoResponse(err, user)
 			if (mongoResponse.message === "OK" && user != null){
 				res.status(200);
