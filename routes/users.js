@@ -93,35 +93,44 @@ module.exports = function(router) {
 
 	userRoute.post(function(req, res) {	  	
 	  	if (!req.body.name || !req.body.email){
-			res.status(200);
-			res.json({"data": "User POST Request Error", "message": "Must provide both email and name to create user."});
-			res.end();
-			return;
+			res.status(200).send({
+    				"data": "User POST Request Error", 
+    				"message": "Must provide both email and name to create user."
+    			});
 	  	}
-	  	User.count({"email":req.body.email}).exec(function (err, users) { //check if there is a user with existing email
-	  		response = handleMongoResponse(err, users);
-
-		    if (response.message === "OK" && parseInt(response.data) == 0){
-		    	var user = new User({
-		    		name: req.body.name, 
-		    		email: req.body.email, 
-		    		pendingTasks: req.body.pendingTasks
-		    	});
-				// Save it to database
-				user.save(function(err, user){
-				   	res.status(201);
-				    res.json(handleMongoResponse(err, user));
-    				res.end();
-				});
-		    }
-		    else {
-		    	res.status(200);
-		    	res.json({"data": "User POST Request Error", "message": "Email must be valid and unique"});
-    			res.end();
-		    }
-	  	});	
-
-
+	  	else {
+		  	User.count({"email":req.body.email}).exec(function (err, users) { //check if there is a user with existing email
+		  		response = handleMongoResponse(err, users);
+			    if (response.message === "OK" && parseInt(response.data) == 0){
+			    	var user = new User({
+			    		name: req.body.name, 
+			    		email: req.body.email, 
+			    		pendingTasks: req.body.pendingTasks
+			    	});
+					// Save it to database
+					user.save(function(err, user){
+						if (err){
+							res.status(200).send({
+								message: err,
+								data: user
+							});
+						}
+						else {
+							res.status(201).send({
+								message: "OK",
+								data: user
+							});
+						}
+					});
+			    }
+			    else {
+	    			res.status(200).send({
+	    				"data": "User POST Request Error", 
+	    				"message": "Email must be valid and unique"
+	    			});
+			    }
+		  	});	
+		}
 	});
 
 	userRoute.options(function(req, res){
