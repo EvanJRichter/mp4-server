@@ -95,7 +95,7 @@ module.exports = function(router) {
 		    	var user = new User({name: req.body.name, email: req.body.email, pendingTasks: req.body.pendingTasks});
 				// Save it to database
 				user.save(function(err, user){
-				   	res.status(200);
+				   	res.status(201);
 				    res.json(handleMongoResponse(err, user));
     				res.end();
 				});
