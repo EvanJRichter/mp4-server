@@ -136,7 +136,7 @@ module.exports = function(router) {
 	var taskIdRoute = router.route('/tasks/:id');
 	
 	taskIdRoute.get(function(req, res) {
-		Task.findById(req.params.id, function (err, task) {
+		Task.findById(req.params.id).select(select).exec(function (err, task) {
 			mongoResponse = handleMongoResponse(err, task)
 			if (mongoResponse.message === "OK" && task != null){
 				res.status(200);

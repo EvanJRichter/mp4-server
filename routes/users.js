@@ -145,7 +145,7 @@ module.exports = function(router) {
 	userIdRoute.get(function(req, res) {
 		var select = req.query.select;
 
-		User.findById().select(select).exec(req.params.id, function (err, user) {
+		User.findById(req.params.id).select(select).exec(function (err, user) {
 			if (err){
 				res.status(404).send({
 					message: "User not found",
