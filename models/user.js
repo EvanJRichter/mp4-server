@@ -9,7 +9,7 @@ mongoose.connect(secrets.mongo_connection);
 var UserSchema   = new mongoose.Schema({
   name: String,
   email: String,
-  pendingTasks: [String],
+  pendingTasks: Object,
   dateCreated: { type: Date, default: Date.now }
 });
 

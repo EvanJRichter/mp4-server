@@ -54,11 +54,13 @@ module.exports = function(router) {
 		var skip = 0; 
 		var sort = {};
 		var select = {};
-		where = req.query.where;
-		limit = req.query.limit;
-		skip =  req.query.skip;
-		sort = req.query.sort;
-		select = req.query.select;
+		var count = {};
+		where = eval('(' + req.query.where + ')');
+		limit = eval('(' + req.query.limit + ')');
+		skip =  eval('(' + req.query.skip + ')');
+		sort = eval('(' + req.query.sort + ')');
+		select = eval('(' + req.query.select + ')');
+		count = eval('(' + req.query.count + ')');
 
 		if(req.query.count && req.query.count === "true"){
 			Task.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, tasks) {
@@ -136,17 +138,26 @@ module.exports = function(router) {
 	var taskIdRoute = router.route('/tasks/:id');
 	
 	taskIdRoute.get(function(req, res) {
-		Task.findById(req.params.id).select(select).exec(function (err, task) {
-			mongoResponse = handleMongoResponse(err, task)
-			if (mongoResponse.message === "OK" && task != null){
-				res.status(200);
-				res.json(mongoResponse); 
+		var select =  eval('(' + req.query.select + ')');
+		Task.find({"_id":req.params.id}).select(select).exec(function (err, task) {
+			if (err){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
+			}
+			else if (task === null || task.length == 0){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"Task Not Found"}); 
-			}
-			res.end();	
+				res.status(200).send({
+					message: "OK",
+					data: task[0]
+				});
+			}		
 	  	});
 	});
 

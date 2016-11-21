@@ -151,7 +151,7 @@ module.exports = function(router) {
 					data: []
 				});
 			}
-			else if (user === null){
+			else if (user === null || user.length == 0){
 				res.status(404).send({
 					message: "User not found",
 					data: []
@@ -160,7 +160,7 @@ module.exports = function(router) {
 			else {
 				res.status(200).send({
 					message: "OK",
-					data: user
+					data: user[0]
 				});
 			}		
 	  	});
@@ -169,13 +169,13 @@ module.exports = function(router) {
 	userIdRoute.put(function(req, res) { 
 		var newUserVals = {};
 		if (req.body.name){
-			newUserVals.name = req.body.name;
+			newUserVals.name = eval('(' + req.body.name + ')');
 		}
 		if (req.body.email){
-			newUserVals.email = req.body.email;
+			newUserVals.email = eval('(' + req.body.email + ')');
 		}
 		if (req.body.pendingTasks){
-			newUserVals.pendingTasks = req.body.pendingTasks;
+			newUserVals.pendingTasks = eval('(' + req.body.pendingTasks + ')');
 		}
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
 			if (err){
