@@ -50,11 +50,11 @@ module.exports = function(router) {
 		var skip = 0; 
 		var sort = {};
 		var select = {};
-		where = req.query.where;
-		limit = req.query.limit;
-		skip =  req.query.skip;
-		sort = req.query.sort;
-		select = req.query.select;
+		where = eval('(' + req.query.where + ')');
+		limit = eval('(' + req.query.limit + ')');
+		skip =  eval('(' + req.query.skip + ')');
+		sort = eval('(' + req.query.sort + ')');
+		select = eval('(' + req.query.select + ')');
 
 		if(req.query.count && req.query.count === "true"){
 			User.count(where).skip(skip).limit(limit).sort(sort).select(select).exec(function (err, users) {
@@ -143,9 +143,8 @@ module.exports = function(router) {
 	var userIdRoute = router.route('/users/:id');
 	
 	userIdRoute.get(function(req, res) {
-		var select = req.query.select;
-
-		User.findById(req.params.id).select(select).exec(function (err, user) {
+		var select =  eval('(' + req.query.select + ')');
+		User.find({"_id":req.params.id}).select(select).exec(function (err, user) {
 			if (err){
 				res.status(404).send({
 					message: "User not found",
@@ -169,9 +168,15 @@ module.exports = function(router) {
 
 	userIdRoute.put(function(req, res) { 
 		var newUserVals = {};
-		newUserVals.name = req.body.name;
-		newUserVals.email = req.body.email;
-		newUserVals.pendingTasks = req.body.pendingTasks;
+		if (req.body.name){
+			newUserVals.name = req.body.name;
+		}
+		if (req.body.email){
+			newUserVals.email = req.body.email;
+		}
+		if (req.body.pendingTasks){
+			newUserVals.pendingTasks = req.body.pendingTasks;
+		}
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
 			if (err){
 				res.status(404).send({
