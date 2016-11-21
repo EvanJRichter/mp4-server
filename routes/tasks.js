@@ -171,18 +171,26 @@ module.exports = function(router) {
 		if (req.body.assignedUserName){ newTaskVals.assignedUserName = req.body.assignedUserName;}
 
 		Task.findByIdAndUpdate(req.params.id, newTaskVals, function (err, task) {
-		    res.status(200);
-			mongoResponse = handleMongoResponse(err, task)
-			console.log(mongoResponse);
-			if (mongoResponse.message === "OK" && task != null){
-				res.status(200);
-				res.json(mongoResponse); 
+			if (err){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
+			}
+			else if (user === null){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"Task Not Found"}); 
-			}
-	  		res.end();
+				Task.findById(req.params.id, function (err, task) {
+					res.status(200).send({
+						message: "Task updated",
+						data: task
+					});
+				});
+			}	
 	  	});
 	});
 

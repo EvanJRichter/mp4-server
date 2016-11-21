@@ -186,10 +186,11 @@ module.exports = function(router) {
 				});
 			}
 			else {
-				user.name = "BUNBUBBU";
-				res.status(200).send({
-					message: "User updated",
-					data: user
+				User.findById(req.params.id, function (err, user) {
+					res.status(200).send({
+						message: "User updated",
+						data: user
+					});
 				});
 			}	
 	  	});
