@@ -163,16 +163,17 @@ module.exports = function(router) {
 
 	taskIdRoute.put(function(req, res) {
 		var newTaskVals = {};
-		newTaskVals.name = req.body.name;
-		newTaskVals.email = req.body.deadline;
-		newTaskVals.description = req.body.description;
-		newTaskVals.completed = req.body.completed;
-		newTaskVals.assignedUser = req.body.assignedUser;
-		newTaskVals.assignedUserName = req.body.assignedUserName;
+		if (req.body.name){ newTaskVals.name = req.body.name;}
+		if (req.body.deadline){ newTaskVals.deadline = req.body.deadline;}
+		if (req.body.description){ newTaskVals.description = req.body.description;}
+		if (req.body.completed){ newTaskVals.completed = req.body.completed;}
+		if (req.body.assignedUser){ newTaskVals.assignedUser = req.body.assignedUser;}
+		if (req.body.assignedUserName){ newTaskVals.assignedUserName = req.body.assignedUserName;}
 
 		Task.findByIdAndUpdate(req.params.id, newTaskVals, function (err, task) {
 		    res.status(200);
 			mongoResponse = handleMongoResponse(err, task)
+			console.log(mongoResponse);
 			if (mongoResponse.message === "OK" && task != null){
 				res.status(200);
 				res.json(mongoResponse); 
