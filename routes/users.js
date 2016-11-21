@@ -171,7 +171,7 @@ module.exports = function(router) {
 		if (req.body.name){ newUserVals.name = req.body.name; }
 		if (req.body.email){ newUserVals.email = req.body.email; }
 		if (req.body.pendingTasks){ newUserVals.pendingTasks = req.body.pendingTasks; }
-		
+
 		User.findByIdAndUpdate(req.params.id, newUserVals, function (err, user) {
 			if (err){
 				res.status(404).send({
@@ -186,6 +186,7 @@ module.exports = function(router) {
 				});
 			}
 			else {
+				user.name = "BUNBUBBU";
 				res.status(200).send({
 					message: "User updated",
 					data: user
