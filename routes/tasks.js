@@ -163,7 +163,7 @@ module.exports = function(router) {
 
 	taskIdRoute.put(function(req, res) {
 		var newTaskVals = {};
-		if (req.body.name){ newTaskVals.name = req.body.name;}
+		if (req.body.name){ newTaskVals.name = req.body.name}
 		if (req.body.deadline){ newTaskVals.deadline = req.body.deadline;}
 		if (req.body.description){ newTaskVals.description = req.body.description;}
 		if (req.body.completed){ newTaskVals.completed = req.body.completed;}
