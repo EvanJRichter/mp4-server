@@ -13,6 +13,7 @@ var port = process.env.PORT || 3000;
 var allowCrossDomain = function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
   next();
 };
 app.use(allowCrossDomain);
@@ -21,14 +22,11 @@ app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(bodyParser.json()); 
+
+app.use(bodyParser.json());
+
 // Use routes as a module (see index.js)
 require('./routes')(app, router);
-
-// // connect to MongoDB
-// mongoose.connect('mongodb://localhost/todo-api')
-//   .then(() =>  console.log('connection succesful'))
-//   .catch((err) => console.error(err));
 
 // Start the server
 app.listen(port);
