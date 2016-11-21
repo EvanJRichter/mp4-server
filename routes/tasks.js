@@ -177,7 +177,7 @@ module.exports = function(router) {
 					data: []
 				});
 			}
-			else if (user === null){
+			else if (task === null){
 				res.status(404).send({
 					message: "Task not found",
 					data: []
@@ -196,16 +196,26 @@ module.exports = function(router) {
 
 	taskIdRoute.delete(function(req, res) {
 		Task.findByIdAndRemove(req.params.id, function (err, task) {
-			mongoResponse = handleMongoResponse(err, task)
-			if (mongoResponse.message === "OK" && task != null){
-				res.status(200);
-				res.json(mongoResponse); 
+			if (err){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
+			}
+			else if (task === null){
+				res.status(404).send({
+					message: "Task not found",
+					data: []
+				});
 			}
 			else {
-				res.status(404);
-				res.json({"data":[], "message":"Task Not Found"}); 
-			}
-			res.end();	
+				Task.findById(req.params.id, function (err, task) {
+					res.status(200).send({
+						message: "Task deleted",
+						data: task
+					});
+				});
+			}	
 	  	});
 	});
 	
